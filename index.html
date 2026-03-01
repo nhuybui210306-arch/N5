@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2N1 - Quản Lý Thời Gian Thông Minh</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header với hiệu ứng -->
+    <header class="glass-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo animate-logo">
+                    <i class="fas fa-clock"></i>
+                    <span>2N1</span>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#home" class="nav-link active"><i class="fas fa-home"></i> Trang Chủ</a></li>
+                        <li><a href="#schedule" class="nav-link"><i class="fas fa-calendar-alt"></i> Lịch Học</a></li>
+                        <li><a href="#pets" class="nav-link"><i class="fas fa-paw"></i> Thú Cưng</a></li>
+                        <li><a href="#shop" class="nav-link"><i class="fas fa-store"></i> Cửa Hàng</a></li>
+                    </ul>
+                </nav>
+                <div class="user-info" id="user-info">
+                    <i class="fas fa-user-circle"></i>
+                    <span id="username"></span>
+                    <div class="points-badge" id="points-display">
+                        <i class="fas fa-star"></i> <span id="user-points">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Thanh tiến trình ngày -->
+        <div class="daily-progress">
+            <div class="progress-header">
+                <h3><i class="fas fa-chart-line"></i> Tiến Độ Hôm Nay</h3>
+                <span id="progress-percent">0%</span>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="daily-progress-bar" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <!-- Main Content với Grid Layout -->
+        <div class="main-grid">
+            <!-- Left Column: Tasks và Lịch -->
+            <div class="left-column">
+                <!-- Nhiệm vụ hôm nay -->
+                <div class="card glass-card" id="home">
+                    <div class="card-header">
+                        <h2><i class="fas fa-tasks"></i> Nhiệm Vụ Hôm Nay</h2>
+                        <button class="btn-add-task" id="add-task-btn">
+                            <i class="fas fa-plus"></i> Thêm
+                        </button>
+                    </div>
+                    
+                    <div class="date-info">
+                        <div class="current-date" id="current-date"></div>
+                        <div class="tasks-summary">
+                            <span id="completed-count">0</span>/<span id="total-count">0</span> hoàn thành
+                        </div>
+                    </div>
+                    
+                    <div class="time-slots" id="time-slots-container"></div>
+                </div>
+
+                <!-- Lịch học trong tuần (CẬP NHẬT) -->
+                <div class="card glass-card" id="schedule">
+                    <div class="card-header">
+                        <h2><i class="fas fa-calendar-week"></i> Lịch Học Trong Tuần</h2>
+                        <button class="btn-save-schedule" id="save-schedule-btn">
+                            <i class="fas fa-save"></i> Lưu
+                        </button>
+                    </div>
+                    
+                    <div class="week-schedule" id="week-schedule">
+                        <!-- JavaScript sẽ tạo lịch ở đây -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Pomodoro, Âm thanh, Thú cưng -->
+            <div class="right-column">
+                <!-- Pomodoro Timer với hiệu ứng -->
+                <div class="card glass-card pomodoro-card">
+                    <h2><i class="fas fa-hourglass-half"></i> Pomodoro</h2>
+                    
+                    <div class="pomodoro-timer">
+                        <div class="timer-circle">
+                            <svg class="progress-ring" width="200" height="200">
+                                <circle class="progress-ring__bg" stroke="#e0e0e0" stroke-width="8" fill="transparent" r="90" cx="100" cy="100"/>
+                                <circle class="progress-ring__progress" stroke="#4b6cb7" stroke-width="8" fill="transparent" r="90" cx="100" cy="100"/>
+                            </svg>
+                            <div class="timer-display" id="timer">25:00</div>
+                        </div>
+                        
+                        <div class="timer-label" id="session-type">Tập trung</div>
+                        
+                        <div class="timer-controls">
+                            <button class="btn-control" id="start-btn">
+                                <i class="fas fa-play"></i>
+                            </button>
+                            <button class="btn-control" id="pause-btn" disabled>
+                                <i class="fas fa-pause"></i>
+                            </button>
+                            <button class="btn-control" id="reset-btn">
+                                <i class="fas fa-redo"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phòng âm thanh Lofi (CẬP NHẬT) -->
+                <div class="card glass-card sound-card">
+                    <h2><i class="fas fa-headphones"></i> Nhạc Lofi Tập Trung</h2>
+                    
+                    <div class="sound-controls">
+                        <div class="volume-control">
+                            <i class="fas fa-volume-down"></i>
+                            <input type="range" id="volume-slider" min="0" max="100" value="50">
+                            <i class="fas fa-volume-up"></i>
+                        </div>
+                        
+                        <div class="sound-buttons">
+                            <button class="sound-btn" data-sound="lofi-study">
+                                <i class="fas fa-book-open"></i>
+                                <span>Lofi Study</span>
+                                <div class="sound-wave"></div>
+                            </button>
+                            <button class="sound-btn" data-sound="lofi-chill">
+                                <i class="fas fa-mug-hot"></i>
+                                <span>Lofi Chill</span>
+                                <div class="sound-wave"></div>
+                            </button>
+                            <button class="sound-btn" data-sound="lofi-rain">
+                                <i class="fas fa-cloud-rain"></i>
+                                <span>Lofi Rain</span>
+                                <div class="sound-wave"></div>
+                            </button>
+                            <button class="sound-btn" data-sound="lofi-jazz">
+                                <i class="fas fa-music"></i>
+                                <span>Lofi Jazz</span>
+                                <div class="sound-wave"></div>
+                            </button>
+                        </div>
+                        
+                        <div class="playing-indicator" id="playing-indicator">
+                            <span>Đang phát: </span>
+                            <span id="current-sound">Không có</span>
+                            <button class="stop-sound" id="stop-sound">
+                                <i class="fas fa-stop"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- YouTube Audio Player Ẩn -->
+                        <div id="youtube-player" style="display: none;"></div>
+                    </div>
+                </div>
+
+                <!-- Thú cưng ảo (CẬP NHẬT) -->
+                <div class="card glass-card pet-card" id="pets">
+                    <h2><i class="fas fa-paw"></i> Thú Cưng Của Bạn</h2>
+                    
+                    <div class="pet-container">
+                        <div class="pet-display" id="pet-display">
+                            <div class="pet-image" id="pet-image">🐱</div>
+                            <div class="pet-status">
+                                <div class="pet-name" id="pet-name">Chưa có thú cưng</div>
+                                <div class="pet-level" id="pet-level">Cấp 1</div>
+                            </div>
+                        </div>
+                        
+                        <div class="pet-stats">
+                            <div class="pet-stat">
+                                <i class="fas fa-heart" style="color: #ff6b6b;"></i>
+                                <div class="stat-bar">
+                                    <div class="stat-fill" id="pet-happiness" style="width: 0%"></div>
+                                </div>
+                                <span id="happiness-value">0%</span>
+                            </div>
+                            <div class="pet-stat">
+                                <i class="fas fa-utensils" style="color: #4ecdc4;"></i>
+                                <div class="stat-bar">
+                                    <div class="stat-fill" id="pet-hunger" style="width: 100%"></div>
+                                </div>
+                                <span id="hunger-value">100%</span>
+                            </div>
+                            <div class="pet-stat">
+                                <i class="fas fa-star" style="color: #ffd93d;"></i>
+                                <div class="stat-bar">
+                                    <div class="stat-fill" id="pet-exp" style="width: 0%"></div>
+                                </div>
+                                <span id="exp-value">0/100</span>
+                            </div>
+                        </div>
+                        
+                        <div class="pet-message" id="pet-message">
+                            <i class="fas fa-comment-dots"></i>
+                            <span>Hoàn thành nhiệm vụ để cho thú cưng ăn!</span>
+                        </div>
+                        
+                        <div class="pet-food-inventory">
+                            <h4><i class="fas fa-box"></i> Thức ăn: <span id="food-count">0</span></h4>
+                            <div class="food-progress">
+                                <div class="food-progress-bar" id="food-progress-bar" style="width: 0%"></div>
+                            </div>
+                            <p class="food-note">Mỗi 3 nhiệm vụ = 1 phần thức ăn</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cửa hàng thú cưng Modal (CẬP NHẬT) -->
+    <div class="modal-overlay" id="shop-modal">
+        <div class="modal-content shop-modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-store"></i> Cửa Hàng Thú Cưng</h3>
+                <button class="close-modal" id="close-shop">&times;</button>
+            </div>
+            
+            <div class="shop-points">
+                <i class="fas fa-star"></i> Điểm của bạn: <span id="shop-points">0</span>
+            </div>
+            
+            <div class="pets-grid" id="pets-grid">
+                <!-- Pet items sẽ được tạo bằng JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Thêm nhiệm vụ Modal -->
+    <div class="modal-overlay" id="task-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-plus-circle"></i> Thêm Nhiệm Vụ</h3>
+                <button class="close-modal" id="close-task">&times;</button>
+            </div>
+            
+            <form id="task-form">
+                <div class="form-group">
+                    <input type="text" id="task-name" placeholder="Tên nhiệm vụ" required>
+                </div>
+                
+                <div class="form-row">
+                    <select id="task-time" required>
+                        <option value="">Chọn khung giờ</option>
+                        <option value="morning">Sáng (8:00 - 12:00)</option>
+                        <option value="afternoon">Chiều (13:00 - 17:00)</option>
+                        <option value="evening">Tối (19:00 - 21:00)</option>
+                    </select>
+                    
+                    <select id="task-duration" required>
+                        <option value="">Thời lượng</option>
+                        <option value="15">15 phút</option>
+                        <option value="30">30 phút</option>
+                        <option value="45">45 phút</option>
+                        <option value="60">1 giờ</option>
+                        <option value="90">1.5 giờ</option>
+                        <option value="120">2 giờ</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <select id="task-priority">
+                        <option value="low">Ưu tiên thấp</option>
+                        <option value="medium" selected>Ưu tiên trung bình</option>
+                        <option value="high">Ưu tiên cao</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn-submit">Thêm nhiệm vụ</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Floating Action Button -->
+    <button class="fab" id="fab">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <!-- Thêm thư viện YouTube IFrame API -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="script.js"></script>
+</body>
+</html>
